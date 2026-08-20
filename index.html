@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#203b2e">
+<title>Auxiliadores OS · v0.1</title>
+<style>
+:root{
+  --paper:#f3efe4; --card:#fffdf7; --ink:#18221b; --muted:#697168;
+  --green:#203b2e; --green2:#5f7566; --line:#d8d3c5; --warm:#e9e4d6;
+  --danger:#8e3d35; --shadow:0 10px 30px rgba(25,35,28,.08);
+}
+*{box-sizing:border-box}
+html{background:var(--paper); color:var(--ink); -webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--paper);min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+.app{max-width:1100px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 18px calc(105px + env(safe-area-inset-bottom))}
+.topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:44px;height:44px;border-radius:13px;background:var(--green);color:#fff;display:grid;place-items:center;font-family:Georgia,serif;font-size:22px}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--green2);font-weight:800}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0}
+h1{font-size:clamp(28px,5vw,48px);line-height:1.02}
+h2{font-size:clamp(24px,4vw,34px);line-height:1.1}
+h3{font-size:20px;line-height:1.15}
+.small{font-size:13px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.45);border-radius:999px;padding:8px 11px;font-size:12px;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:#5b7c61}
+.hero{background:var(--green);color:#f8f5ec;border-radius:26px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"A";position:absolute;right:-15px;bottom:-80px;font-family:Georgia,serif;font-size:220px;opacity:.06}
+.hero p{max-width:720px;font-size:18px;line-height:1.45;margin:15px 0 0}
+.quote{font-family:Georgia,serif;font-size:clamp(23px,4vw,40px);line-height:1.15;margin-top:32px}
+.grid{display:grid;gap:14px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 3px 15px rgba(25,35,28,.035)}
+.card.soft{background:var(--warm)}
+.section{display:none;animation:fade .18s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:.3;transform:translateY(3px)}to{opacity:1;transform:none}}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:28px 0 14px}
+.section-head p{margin:5px 0 0;color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:800;cursor:pointer;min-height:46px}
+.btn.primary{background:var(--green);color:white}
+.btn.secondary{background:var(--warm);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--line)}
+.btn.danger{background:#f5e4df;color:var(--danger)}
+.actions{display:flex;flex-wrap:wrap;gap:9px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:15px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px}
+.kpi b{display:block;font-family:Georgia,serif;font-size:31px}
+.kpi span{color:var(--muted);font-size:12px}
+.quick{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:14px}
+label{display:block;font-size:12px;font-weight:800;margin:0 0 6px;color:var(--green)}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:#fffefa;padding:13px 14px;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(95,117,102,.12)}
+textarea{min-height:115px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid .wide{grid-column:1/-1}
+.nav{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:min(720px,calc(100% - 24px));background:rgba(255,253,247,.94);backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:0 14px 40px rgba(18,30,22,.16);border-radius:22px;padding:8px;display:grid;grid-template-columns:repeat(5,1fr)}
+.nav button{border:0;background:transparent;padding:10px 5px;border-radius:15px;font-size:11px;color:var(--muted);font-weight:800}
+.nav button span{display:block;font-size:20px;margin-bottom:3px}
+.nav button.active{background:var(--green);color:#fff}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.flow .step{border-left:3px solid var(--green);padding:4px 10px}
+.flow .num{font-family:Georgia,serif;font-size:32px;color:var(--green2)}
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.pillar .n{font-family:Georgia,serif;font-size:32px;color:var(--green2);margin-bottom:3px}
+.pillar p{margin:7px 0 0;color:var(--muted);line-height:1.4}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:12px}
+.toolbar input,.toolbar select{width:auto;flex:1;min-width:150px}
+.inbox{display:grid;gap:10px}
+.capture-item{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:10px}
+.capture-item h3{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px}
+.meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.chip{display:inline-flex;padding:5px 8px;border-radius:999px;background:var(--warm);font-size:11px;font-weight:750;color:var(--green)}
+.capture-item p{margin:7px 0 0;color:#4d554f;line-height:1.45;white-space:pre-wrap}
+.item-actions{display:flex;align-items:start;gap:7px}
+.item-actions select{padding:8px 9px;border-radius:10px;font-size:12px}
+.iconbtn{border:1px solid var(--line);background:#fff;border-radius:10px;min-width:38px;min-height:38px}
+.idea-card{position:relative}
+.idea-card .idea-text{font-family:Georgia,serif;font-size:20px;line-height:1.28;margin:10px 0 14px}
+.idea-card .use{width:100%}
+.idea-random{background:var(--green);color:#fff;padding:24px;border-radius:22px}
+.idea-random .idea-text{font-family:Georgia,serif;font-size:clamp(24px,4vw,34px);line-height:1.16;margin:12px 0 18px}
+.manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.principle{display:flex;gap:12px}
+.principle .idx{font-family:Georgia,serif;font-size:28px;color:var(--green2);min-width:34px}
+.principle b{display:block;margin-bottom:4px}
+.principle p{margin:0;color:var(--muted);line-height:1.4}
+.territories{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.territory{background:var(--warm);border-radius:17px;padding:14px}
+.territory .letter{font-family:Georgia,serif;font-size:32px;color:var(--green2)}
+.week{display:grid;grid-template-columns:80px repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.week > div{background:var(--card);padding:12px;font-size:13px}
+.week .head{font-weight:800;background:var(--green);color:#fff}
+.checklist{display:grid;gap:9px}
+.check{display:flex;align-items:flex-start;gap:10px;background:var(--card);border:1px solid var(--line);padding:13px;border-radius:14px}
+.check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--green)}
+.progress{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.progress > div{height:100%;background:var(--green);width:0;transition:.2s}
+.empty{padding:26px;text-align:center;border:1px dashed var(--line);border-radius:17px;color:var(--muted)}
+.toast{position:fixed;z-index:50;left:50%;bottom:calc(95px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#14271d;color:#fff;padding:11px 14px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.search-results{margin-top:10px;display:none}
+.search-results.show{display:block}
+.search-hit{padding:10px;border-bottom:1px solid var(--line);cursor:pointer}
+.search-hit:last-child{border:0}
+.search-hit b{display:block;font-size:12px;color:var(--green2);margin-bottom:3px}
+footer{margin:30px 0 5px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:760px){
+ .grid.two,.grid.three,.quick,.manual-grid{grid-template-columns:1fr}
+ .kpis{grid-template-columns:repeat(2,1fr)}
+ .pillars{grid-template-columns:1fr}
+ .flow{grid-template-columns:1fr 1fr}
+ .territories{grid-template-columns:1fr 1fr}
+ .week{grid-template-columns:68px 1fr 1fr}
+ .week .hide-mobile{display:none}
+ .capture-item{grid-template-columns:1fr}
+ .item-actions{justify-content:space-between}
+ .hero{padding:22px}
+}
+@media(max-width:430px){
+ .app{padding-left:12px;padding-right:12px}
+ .topbar{align-items:flex-start}
+ .topbar .badge{display:none}
+ .form-grid{grid-template-columns:1fr}
+ .form-grid .wide{grid-column:auto}
+ .flow{grid-template-columns:1fr}
+ .week{grid-template-columns:60px 1fr}
+ .week .mobile-hide2{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark">A</div>
+      <div>
+        <div class="eyebrow">Auxiliadores / centro de operaciones</div>
+        <strong>Auxiliadores OS · v0.1</strong>
+      </div>
+    </div>
+    <div class="badge"><span class="dot"></span> Archivo único · sin servidor</div>
+  </header>
+
+  <div class="toolbar">
+    <input id="globalSearch" type="search" placeholder="Buscar ideas o capturas…">
+    <button class="btn ghost" id="exportBtn">Exportar respaldo</button>
+    <button class="btn ghost" id="importBtn">Importar</button>
+    <input id="importFile" type="file" accept="application/json" hidden>
+  </div>
+  <div id="searchResults" class="card search-results"></div>
+
+  <main>
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="eyebrow" style="color:#bfcbbf">Principio rector</div>
+        <h1>La música es el centro.</h1>
+        <p>La comunicación existe para servir a la música, no para gobernarla. Este sistema ayuda a capturar, ordenar y compartir sin convertir cada momento en una obligación de publicar.</p>
+        <div class="quote">“No hacemos música para tener contenido; documentamos porque hacemos música.”</div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><b id="kpiTotal">0</b><span>capturas</span></div>
+        <div class="kpi"><b id="kpiSelected">0</b><span>seleccionadas</span></div>
+        <div class="kpi"><b id="kpiScheduled">0</b><span>programadas</span></div>
+        <div class="kpi"><b id="kpiPlan">0%</b><span>plan 30 días</span></div>
+      </div>
+
+      <div class="section-head"><div><h2>¿Qué necesita hacer la banda hoy?</h2><p>Entradas directas, sin dar vueltas.</p></div></div>
+      <div class="grid three">
+        <button class="card btn secondary jump" data-go="capture" style="text-align:left"><h3>＋ Capturar algo</h3><p class="small">Idea, frase, clip, aprendizaje o momento.</p></button>
+        <button class="card btn secondary jump" data-go="ideas" style="text-align:left"><h3>✦ Buscar un ángulo</h3><p class="small">100 disparadores del manual.</p></button>
+        <button class="card btn secondary jump" data-go="plan" style="text-align:left"><h3>✓ Ver el ritmo</h3><p class="small">Calendario sostenible y plan de 30 días.</p></button>
+      </div>
+
+      <div class="section-head"><div><h2>Flujo de trabajo</h2><p>Capturar una vez, programar después.</p></div></div>
+      <div class="card">
+        <div class="flow">
+          <div class="step"><div class="num">01</div><b>Captura</b><div class="small">Clips, fotos, audio, frases y notas. Sin obligación de publicar.</div></div>
+          <div class="step"><div class="num">02</div><b>Archivo</b><div class="small">Guardar por fecha, sesión y canción para poder encontrarlo.</div></div>
+          <div class="step"><div class="num">03</div><b>Selección</b><div class="small">Elegir el material con mayor densidad de identidad.</div></div>
+          <div class="step"><div class="num">04</div><b>Programación</b><div class="small">Preparar publicaciones en bloque.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="capture" class="section">
+      <div class="section-head"><div><div class="eyebrow">Captura rápida</div><h2>Que la idea no se pierda.</h2><p>Registrar primero; decidir si se publica después.</p></div></div>
+      <div class="quick">
+        <div class="card">
+          <form id="captureForm">
+            <div class="form-grid">
+              <div class="wide"><label for="title">¿Qué pasó / qué idea salió?</label><input id="title" required maxlength="120" placeholder="Ej. El coro funciona mejor con menos guitarra"></div>
+              <div><label for="pillar">Pilar</label><select id="pillar"></select></div>
+              <div><label for="format">Tipo</label><select id="format"><option>Nota</option><option>Foto</option><option>Video</option><option>Audio</option><option>Idea de publicación</option><option>Aprendizaje</option><option>Historia</option></select></div>
+              <div class="wide"><label for="notes">Contexto</label><textarea id="notes" placeholder="Qué ocurrió, por qué importa, qué canción o sesión estaba involucrada…"></textarea></div>
+              <div><label for="date">Fecha</label><input id="date" type="date"></div>
+              <div><label for="person">Persona / canción / evento</label><input id="person" placeholder="Opcional"></div>
+            </div>
+            <div class="actions" style="margin-top:13px">
+              <button class="btn primary" type="submit">Guardar captura</button>
+              <button class="btn secondary" type="reset">Limpiar</button>
+            </div>
+          </form>
+        </div>
+        <div class="card soft">
+          <div class="eyebrow">El ojo documental</div>
+          <h3 style="margin-top:6px">¿Cuál fue el momento más importante de hoy?</h3>
+          <p class="small" style="font-size:15px;line-height:1.5">No hace falta que pase algo extraordinario. Hace falta mirar mejor.</p>
+          <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+          <b>Cuatro huellas mínimas</b>
+          <p class="small">Evidencia · Aprendizaje · Historia · Puente compartible.</p>
+          <b>Nombre sugerido de archivo</b>
+          <p class="small">AAAA-MM-DD_TIPO_CANCIÓN-EVENTO_PERSONA</p>
+        </div>
+      </div>
+
+      <div class="section-head"><div><h2>Bandeja</h2><p>Mueve cada captura de estado conforme avance.</p></div></div>
+      <div class="toolbar">
+        <input id="captureSearch" type="search" placeholder="Buscar en capturas">
+        <select id="statusFilter"><option value="">Todos los estados</option><option>Capturado</option><option>Seleccionado</option><option>Programado</option><option>Archivado</option></select>
+        <select id="pillarFilter"><option value="">Todos los pilares</option></select>
+      </div>
+      <div id="inbox" class="inbox"></div>
+    </section>
+
+    <section id="ideas" class="section">
+      <div class="section-head"><div><div class="eyebrow">Banco editorial</div><h2>100 ideas para no empezar de cero.</h2><p>Elige un pilar o deja que el sistema te dispare una al azar.</p></div></div>
+      <div class="idea-random">
+        <div class="eyebrow" style="color:#bdcbbb">Disparador</div>
+        <div class="idea-text" id="randomIdea">Toca “Otra idea” para empezar.</div>
+        <div class="actions"><button class="btn secondary" id="randomBtn">Otra idea</button><button class="btn ghost" id="captureRandomBtn" style="color:white;border-color:#87988b">Llevar a captura</button></div>
+      </div>
+      <div class="toolbar" style="margin-top:16px">
+        <select id="ideaPillar"><option value="">Todos los pilares</option></select>
+        <input id="ideaSearch" type="search" placeholder="Buscar entre 100 ideas">
+      </div>
+      <div id="ideaGrid" class="grid three"></div>
+    </section>
+
+    <section id="manual" class="section">
+      <div class="section-head"><div><div class="eyebrow">Manual interactivo</div><h2>La brújula editorial.</h2><p>La app no reemplaza el criterio de la banda; lo vuelve accesible durante el trabajo.</p></div></div>
+
+      <div class="card">
+        <div class="territories">
+          <div class="territory"><div class="letter">M</div><b>La música</b><div class="small">Canciones, letras, arreglos, sonidos e influencias.</div></div>
+          <div class="territory"><div class="letter">P</div><b>Las personas</b><div class="small">Personalidades, talentos, humor, deseos y límites.</div></div>
+          <div class="territory"><div class="letter">PR</div><b>El proceso</b><div class="small">Ensayos, decisiones, accidentes, técnica y evolución.</div></div>
+          <div class="territory"><div class="letter">U</div><b>El universo</b><div class="small">Lugares, objetos, escenas, amistades, estética y cultura.</div></div>
+        </div>
+        <p style="margin-bottom:0"><b>Regla editorial:</b> una publicación debería fortalecer al menos uno de estos territorios. Las mejores fortalecen dos o más sin sentirse forzadas.</p>
+      </div>
+
+      <div class="section-head"><div><h2>12 principios operativos</h2></div></div>
+      <div id="principlesGrid" class="manual-grid"></div>
+
+      <div class="section-head"><div><h2>Los 10 pilares</h2><p>Territorios que permiten hablar de la banda todo el año.</p></div></div>
+      <div id="pillarsGrid" class="pillars"></div>
+
+      <div class="card soft" style="margin-top:14px">
+        <h3>Regla de protección</h3>
+        <p style="line-height:1.5;margin-bottom:0">Debe haber momentos donde nadie graba. Si documentar interrumpe una decisión artística, la cámara se apaga. El archivo tiene que proteger la música, no presionarla.</p>
+      </div>
+    </section>
+
+    <section id="plan" class="section">
+      <div class="section-head"><div><div class="eyebrow">Ritmo sostenible</div><h2>Una estructura que no le robe energía a la música.</h2><p>Volumen sugerido: 2–3 publicaciones fuertes por semana + historias cuando haya algo genuino que mostrar.</p></div></div>
+
+      <div class="card" style="overflow:auto">
+        <div class="week" style="min-width:620px">
+          <div class="head">Semana</div><div class="head">Pieza 1</div><div class="head">Pieza 2</div><div class="head hide-mobile">Pieza 3</div><div class="head mobile-hide2">Archivo interno</div>
+          <div><b>1</b></div><div>Canción</div><div>Ensayo / proceso</div><div class="hide-mobile">Persona</div><div class="mobile-hide2">Guardar toma larga</div>
+          <div><b>2</b></div><div>Archivo viejo</div><div>Influencia</div><div class="hide-mobile">Pregunta</div><div class="mobile-hide2">Nota de voz post-ensayo</div>
+          <div><b>3</b></div><div>Estudio / sonido</div><div>Canción</div><div class="hide-mobile">Comunidad</div><div class="mobile-hide2">Fotos de sesión</div>
+          <div><b>4</b></div><div>Concierto / universo</div><div>Persona</div><div class="hide-mobile">Catálogo</div><div class="mobile-hide2">Seleccionar material del mes</div>
+        </div>
+      </div>
+
+      <div class="section-head"><div><h2>Primer experimento · 30 días</h2><p>El éxito no es crecer X seguidores: es demostrar que el sistema se puede sostener.</p></div><b id="planPct">0%</b></div>
+      <div class="progress"><div id="planBar"></div></div>
+      <div id="planChecklist" class="checklist" style="margin-top:12px"></div>
+
+      <div class="card soft" style="margin-top:14px">
+        <h3>Sesión mensual de programación</h3>
+        <ol style="line-height:1.7;margin-bottom:0">
+          <li>Revisar el archivo del mes.</li>
+          <li>Elegir 8–12 piezas.</li>
+          <li>Asignar un objetivo simple a cada una.</li>
+          <li>Escribir textos cortos.</li>
+          <li>Programar.</li>
+          <li>Dejar 20–30% del calendario libre para actualidad y espontaneidad.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer>Auxiliadores OS · v0.1 · basado en Manual Editorial de Auxiliadores v0.1 · datos de trabajo guardados en este navegador.</footer>
+</div>
+
+<nav class="nav" aria-label="Navegación principal">
+  <button class="active" data-target="home"><span>⌂</span>Inicio</button>
+  <button data-target="capture"><span>＋</span>Captura</button>
+  <button data-target="ideas"><span>✦</span>Ideas</button>
+  <button data-target="manual"><span>☰</span>Manual</button>
+  <button data-target="plan"><span>✓</span>30 días</button>
+</nav>
+
+<div id="toast" class="toast">Guardado</div>
+
+<script>
+const PILLARS = [{"name": "Canciones", "desc": "La obra terminada y todas las maneras de volver a entrar en ella."}, {"name": "Ensayos", "desc": "Cómo cambia la música cuando cuatro personas la hacen vivir."}, {"name": "Estudio y sonido", "desc": "Grabación, instrumentos, decisiones de producción y cultura de estudio."}, {"name": "Integrantes", "desc": "Personalidad, talentos, trabajos, deseos, gustos y límites."}, {"name": "Proceso creativo", "desc": "De dónde nacen las ideas y cómo se transforman."}, {"name": "Influencias", "desc": "Música, libros, cine, arte y escenas que alimentan el proyecto."}, {"name": "Conciertos y carretera", "desc": "Preparación, escenario, backstage, encuentros, lugares y memoria en vivo."}, {"name": "Historia y archivo", "desc": "Fotos, demos, primeras versiones, carteles, recuerdos y cambios."}, {"name": "Comunidad y escena", "desc": "Otras bandas, medios, foros, público, conversaciones y recomendaciones."}, {"name": "Universo Auxiliadores", "desc": "Objetos, obsesiones, lugares, humor, preguntas y pequeñas cosas que dan textura."}];
+const IDEAS = [{"pillar": "Canciones", "text": "Contar en 30 segundos qué emoción originó una canción."}, {"pillar": "Canciones", "text": "Elegir una línea de letra y explicar por qué sobrevivió todas las versiones."}, {"pillar": "Canciones", "text": "Publicar un fragmento instrumental sin voz para escuchar el arreglo de otra manera."}, {"pillar": "Canciones", "text": "Comparar demo vs. versión final."}, {"pillar": "Canciones", "text": "Mostrar qué parte de la canción cambió más durante el proceso."}, {"pillar": "Canciones", "text": "Preguntar al público qué imagen les provoca una letra específica."}, {"pillar": "Canciones", "text": "Tocar una versión acústica mínima de una canción ya publicada."}, {"pillar": "Canciones", "text": "Revisitar una canción vieja: ¿qué haríamos diferente hoy?"}, {"pillar": "Canciones", "text": "Hacer un clip centrado únicamente en bajo, batería, guitarra o teclado."}, {"pillar": "Canciones", "text": "Contar la historia del título de una canción."}, {"pillar": "Ensayos", "text": "Un minuto de ensayo sin edición."}, {"pillar": "Ensayos", "text": "El arreglo que se resolvió hoy."}, {"pillar": "Ensayos", "text": "El error que hizo reír a todos y qué aprendieron de él."}, {"pillar": "Ensayos", "text": "Un antes/después de tocar con click."}, {"pillar": "Ensayos", "text": "La discusión musical del día resumida sin dramatizar."}, {"pillar": "Ensayos", "text": "La canción que más trabajo está costando y por qué."}, {"pillar": "Ensayos", "text": "El ritual de preparar el cuarto antes de empezar."}, {"pillar": "Ensayos", "text": "Un plano fijo de una canción completa para archivo."}, {"pillar": "Ensayos", "text": "Tres cosas que mejoraron hoy."}, {"pillar": "Ensayos", "text": "El minuto después de terminar el ensayo: primera reacción de cada integrante."}, {"pillar": "Estudio y sonido", "text": "Antes y después de una mezcla en 20 segundos."}, {"pillar": "Estudio y sonido", "text": "Un micrófono, pedal o instrumento y la razón musical para elegirlo."}, {"pillar": "Estudio y sonido", "text": "La toma que parecía mala y terminó quedándose."}, {"pillar": "Estudio y sonido", "text": "Cómo se decide cuándo dejar de editar."}, {"pillar": "Estudio y sonido", "text": "Un instrumento escuchado solo dentro de la sesión."}, {"pillar": "Estudio y sonido", "text": "La cadena de señal de un sonido importante, explicada sin tecnicismos innecesarios."}, {"pillar": "Estudio y sonido", "text": "Una decisión de mezcla que cambió la emoción de la canción."}, {"pillar": "Estudio y sonido", "text": "Lo que no usamos: una opción descartada y por qué."}, {"pillar": "Estudio y sonido", "text": "El sonido más raro encontrado esa semana."}, {"pillar": "Estudio y sonido", "text": "Un minuto de silencio del estudio antes de grabar."}, {"pillar": "Integrantes", "text": "Cada integrante elige tres discos que explican algo de su manera de tocar."}, {"pillar": "Integrantes", "text": "Un talento fuera de la música."}, {"pillar": "Integrantes", "text": "Un trabajo o actividad cotidiana que influye en cómo escucha."}, {"pillar": "Integrantes", "text": "Una cosa que le da miedo en el escenario y cómo la maneja."}, {"pillar": "Integrantes", "text": "Un sueño musical a cinco años."}, {"pillar": "Integrantes", "text": "Una obsesión reciente: libro, película, objeto o sonido."}, {"pillar": "Integrantes", "text": "Algo que los demás integrantes hacen mejor que yo."}, {"pillar": "Integrantes", "text": "Una manía de ensayo."}, {"pillar": "Integrantes", "text": "Una canción de Auxiliadores que cada integrante siente más cercana."}, {"pillar": "Integrantes", "text": "Un pequeño autorretrato hablado: quién soy hoy en 45 segundos."}, {"pillar": "Proceso creativo", "text": "La primera nota de voz de una idea que terminó en canción."}, {"pillar": "Proceso creativo", "text": "Una letra tachada o una frase descartada, sin revelar material que se quiera guardar."}, {"pillar": "Proceso creativo", "text": "Cómo cambia una canción cuando entra la batería."}, {"pillar": "Proceso creativo", "text": "Una decisión tomada por intuición y no por teoría."}, {"pillar": "Proceso creativo", "text": "El momento en que una canción se volvió canción."}, {"pillar": "Proceso creativo", "text": "Mostrar tres rutas posibles para un arreglo y explicar cuál ganó."}, {"pillar": "Proceso creativo", "text": "Una regla creativa que la banda rompió."}, {"pillar": "Proceso creativo", "text": "Hoy quitamos algo: celebrar la sustracción."}, {"pillar": "Proceso creativo", "text": "Un bloqueo creativo y la herramienta que ayudó a salir."}, {"pillar": "Proceso creativo", "text": "Una canción que todavía no entienden del todo."}, {"pillar": "Influencias", "text": "Una canción ajena que abrió una puerta para una composición propia."}, {"pillar": "Influencias", "text": "Un disco que cada integrante escucharía completo hoy."}, {"pillar": "Influencias", "text": "Una escena de película por su sonido, no por su argumento."}, {"pillar": "Influencias", "text": "Un libro o frase que cambió una letra."}, {"pillar": "Influencias", "text": "Una banda mexicana que recomiendan y por qué."}, {"pillar": "Influencias", "text": "Una influencia que nadie adivinaría escuchando Auxiliadores."}, {"pillar": "Influencias", "text": "Una comparación de dos producciones que aman por razones opuestas."}, {"pillar": "Influencias", "text": "Un cover de 30 segundos como homenaje, no como imitación."}, {"pillar": "Influencias", "text": "Tres sonidos que queremos robar emocionalmente, no literalmente."}, {"pillar": "Influencias", "text": "Una playlist temática construida por un integrante."}, {"pillar": "Conciertos y carretera", "text": "El setlist escrito antes de tocar."}, {"pillar": "Conciertos y carretera", "text": "30 segundos del montaje del escenario."}, {"pillar": "Conciertos y carretera", "text": "Qué canción se siente distinta en vivo."}, {"pillar": "Conciertos y carretera", "text": "Un clip desde atrás de la batería o desde un costado del escenario."}, {"pillar": "Conciertos y carretera", "text": "El objeto que siempre viaja con un integrante."}, {"pillar": "Conciertos y carretera", "text": "Crónica de un show en cinco fotos."}, {"pillar": "Conciertos y carretera", "text": "Lo que aprendimos de tocar aquí."}, {"pillar": "Conciertos y carretera", "text": "Una conversación breve con otra banda del cartel."}, {"pillar": "Conciertos y carretera", "text": "La prueba de sonido comparada con el concierto."}, {"pillar": "Conciertos y carretera", "text": "El regreso a casa: una frase de cada integrante."}, {"pillar": "Historia y archivo", "text": "Una foto vieja y la historia que no se ve en la imagen."}, {"pillar": "Historia y archivo", "text": "Primer demo vs. interpretación actual."}, {"pillar": "Historia y archivo", "text": "Un cartel de un concierto pasado y qué recuerdan de esa noche."}, {"pillar": "Historia y archivo", "text": "Un instrumento que acompañó una etapa de la banda."}, {"pillar": "Historia y archivo", "text": "La primera versión de un logo, portada o concepto visual."}, {"pillar": "Historia y archivo", "text": "Una canción que cambió de nombre."}, {"pillar": "Historia y archivo", "text": "Un recuerdo que dos integrantes narran de manera distinta."}, {"pillar": "Historia y archivo", "text": "Hace un año estábamos aquí; hoy estamos acá."}, {"pillar": "Historia y archivo", "text": "Un archivo perdido y recuperado."}, {"pillar": "Historia y archivo", "text": "Una cronología de 5 momentos que llevaron a una canción."}, {"pillar": "Comunidad y escena", "text": "Recomendar una banda con la que compartieron escenario."}, {"pillar": "Comunidad y escena", "text": "Presentar un foro o espacio que vale la pena conocer."}, {"pillar": "Comunidad y escena", "text": "Responder una pregunta real de alguien que los escucha."}, {"pillar": "Comunidad y escena", "text": "Invitar a la gente a elegir entre dos canciones para un set."}, {"pillar": "Comunidad y escena", "text": "Compartir una reseña o comentario y explicar qué les hizo pensar."}, {"pillar": "Comunidad y escena", "text": "Una mini entrevista de cinco preguntas a un colaborador."}, {"pillar": "Comunidad y escena", "text": "Una playlist con música de bandas amigas."}, {"pillar": "Comunidad y escena", "text": "Una historia sobre una persona del público que recuerden."}, {"pillar": "Comunidad y escena", "text": "Preguntar: ¿cómo nos descubriste?"}, {"pillar": "Comunidad y escena", "text": "Crear una pieza colectiva con respuestas de seguidores."}, {"pillar": "Universo Auxiliadores", "text": "El objeto más extraño del cuarto de ensayo."}, {"pillar": "Universo Auxiliadores", "text": "La palabra de la semana."}, {"pillar": "Universo Auxiliadores", "text": "Un pequeño mapa de lugares importantes para la banda."}, {"pillar": "Universo Auxiliadores", "text": "Una portada imaginaria para una canción vieja."}, {"pillar": "Universo Auxiliadores", "text": "Una pregunta filosófica relacionada con una letra."}, {"pillar": "Universo Auxiliadores", "text": "Una lista de cinco cosas que no son música pero sí alimentan la música."}, {"pillar": "Universo Auxiliadores", "text": "El sonido cotidiano que alguien quisiera convertir en instrumento."}, {"pillar": "Universo Auxiliadores", "text": "Una tradición interna o chiste recurrente explicado con cuidado."}, {"pillar": "Universo Auxiliadores", "text": "Una cápsula del tiempo de 60 segundos para abrir dentro de un año."}, {"pillar": "Universo Auxiliadores", "text": "¿Quiénes somos esta semana?: cuatro respuestas, una por integrante."}];
+const PRINCIPLES = [{"name": "Música primero", "desc": "La estrategia nunca debe dictar la obra."}, {"name": "Documentar antes que promocionar", "desc": "La promoción nace de material real."}, {"name": "Registrar, no fabricar", "desc": "No inventar una identidad para parecer interesantes."}, {"name": "No todo se publica", "desc": "El archivo es mayor que las redes."}, {"name": "El proceso también cuenta", "desc": "Una decisión mínima puede ser una buena historia."}, {"name": "La imperfección puede acercar", "desc": "No todo necesita acabado publicitario."}, {"name": "Cada integrante tiene voz", "desc": "La banda no debe sonar como una sola personalidad artificial."}, {"name": "Una idea puede tener capas", "desc": "Clip breve, carrusel, texto, video largo."}, {"name": "Cada sesión deja huellas", "desc": "Ensayos y grabaciones deberían producir archivo."}, {"name": "Reutilizar es profundizar", "desc": "Volver a una canción no es repetirla: es encontrarle otro ángulo."}, {"name": "La constancia debe ser sostenible", "desc": "Mejor una rutina posible que una campaña agotadora."}, {"name": "La comunicación invita", "desc": "No busca convencer a todos; busca que quienes conecten puedan entrar."}];
+const STORE_KEY = "auxiliadores_os_v01";
+const defaultState = {captures:[], checks:{}, randomIdeaIndex:0};
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? {...defaultState, ...JSON.parse(raw)} : structuredClone(defaultState);
+  }catch(e){ return {captures:[],checks:{},randomIdeaIndex:0}; }
+}
+function saveState(){
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  updateKPIs();
+}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1400);
+}
+function esc(s=""){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+function todayISO(){
+  const d=new Date(), off=d.getTimezoneOffset();
+  return new Date(d.getTime()-off*60000).toISOString().slice(0,10);
+}
+
+const pillarSelects=["pillar","pillarFilter","ideaPillar"];
+pillarSelects.forEach(id=>{
+  const el=document.getElementById(id);
+  PILLARS.forEach(p=>{
+    const o=document.createElement("option"); o.value=p.name; o.textContent=p.name; el.appendChild(o);
+  });
+});
+document.getElementById("date").value=todayISO();
+
+function goTo(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+  scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>goTo(b.dataset.target)));
+document.querySelectorAll(".jump").forEach(b=>b.addEventListener("click",()=>goTo(b.dataset.go)));
+
+document.getElementById("captureForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const item={
+    id:(crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+    title:document.getElementById("title").value.trim(),
+    pillar:document.getElementById("pillar").value,
+    format:document.getElementById("format").value,
+    notes:document.getElementById("notes").value.trim(),
+    date:document.getElementById("date").value || todayISO(),
+    person:document.getElementById("person").value.trim(),
+    status:"Capturado",
+    createdAt:new Date().toISOString()
+  };
+  state.captures.unshift(item); saveState(); renderInbox();
+  e.target.reset(); document.getElementById("date").value=todayISO();
+  toast("Captura guardada");
+});
+
+["captureSearch","statusFilter","pillarFilter"].forEach(id=>document.getElementById(id).addEventListener("input",renderInbox));
+
+function renderInbox(){
+  const q=document.getElementById("captureSearch").value.toLowerCase().trim();
+  const sf=document.getElementById("statusFilter").value;
+  const pf=document.getElementById("pillarFilter").value;
+  let rows=state.captures.filter(x=>{
+    const hay=[x.title,x.notes,x.person,x.pillar,x.format].join(" ").toLowerCase();
+    return (!q||hay.includes(q)) && (!sf||x.status===sf) && (!pf||x.pillar===pf);
+  });
+  const box=document.getElementById("inbox");
+  if(!rows.length){ box.innerHTML='<div class="empty">Todavía no hay capturas que coincidan. La primera puede tomar diez segundos.</div>'; return; }
+  box.innerHTML=rows.map(x=>`
+    <article class="capture-item">
+      <div>
+        <h3>${esc(x.title)}</h3>
+        <div class="meta"><span class="chip">${esc(x.pillar)}</span><span class="chip">${esc(x.format)}</span><span class="chip">${esc(x.date)}</span>${x.person?`<span class="chip">${esc(x.person)}</span>`:""}</div>
+        ${x.notes?`<p>${esc(x.notes)}</p>`:""}
+      </div>
+      <div class="item-actions">
+        <select data-status="${x.id}" aria-label="Estado">
+          ${["Capturado","Seleccionado","Programado","Archivado"].map(s=>`<option ${s===x.status?"selected":""}>${s}</option>`).join("")}
+        </select>
+        <button class="iconbtn" data-delete="${x.id}" aria-label="Eliminar">✕</button>
+      </div>
+    </article>`).join("");
+  box.querySelectorAll("[data-status]").forEach(sel=>sel.addEventListener("change",()=>{
+    const x=state.captures.find(i=>i.id===sel.dataset.status); if(x){x.status=sel.value;saveState();renderInbox();toast("Estado actualizado");}
+  }));
+  box.querySelectorAll("[data-delete]").forEach(btn=>btn.addEventListener("click",()=>{
+    if(confirm("¿Eliminar esta captura?")){state.captures=state.captures.filter(i=>i.id!==btn.dataset.delete);saveState();renderInbox();}
+  }));
+}
+
+function renderIdeas(){
+  const pf=document.getElementById("ideaPillar").value;
+  const q=document.getElementById("ideaSearch").value.toLowerCase().trim();
+  const list=IDEAS.filter(i=>(!pf||i.pillar===pf)&&(!q||(`${i.pillar} ${i.text}`).toLowerCase().includes(q)));
+  document.getElementById("ideaGrid").innerHTML=list.map((i,idx)=>`
+    <article class="card idea-card">
+      <span class="chip">${esc(i.pillar)}</span>
+      <div class="idea-text">${esc(i.text)}</div>
+      <button class="btn secondary use" data-use="${esc(i.pillar)}|${esc(i.text)}">Usar esta idea</button>
+    </article>`).join("");
+  document.querySelectorAll("[data-use]").forEach(b=>b.addEventListener("click",()=>{
+    const [pillar,...rest]=b.dataset.use.split("|"); prefillCapture(rest.join("|"),pillar);
+  }));
+}
+["ideaPillar","ideaSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderIdeas));
+
+function randomIdea(){
+  let idx=Math.floor(Math.random()*IDEAS.length);
+  state.randomIdeaIndex=idx; saveState();
+  const i=IDEAS[idx];
+  document.getElementById("randomIdea").innerHTML=`<span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.7">${esc(i.pillar)}</span><br>${esc(i.text)}`;
+}
+document.getElementById("randomBtn").addEventListener("click",randomIdea);
+document.getElementById("captureRandomBtn").addEventListener("click",()=>{
+  const i=IDEAS[state.randomIdeaIndex] || IDEAS[0]; prefillCapture(i.text,i.pillar);
+});
+function prefillCapture(text,pillar){
+  goTo("capture"); document.getElementById("title").value=text; document.getElementById("pillar").value=pillar; document.getElementById("format").value="Idea de publicación"; document.getElementById("notes").focus();
+}
+
+function renderManual(){
+  document.getElementById("principlesGrid").innerHTML=PRINCIPLES.map((p,i)=>`
+    <div class="card principle"><div class="idx">${String(i+1).padStart(2,"0")}</div><div><b>${esc(p.name)}</b><p>${esc(p.desc)}</p></div></div>`).join("");
+  document.getElementById("pillarsGrid").innerHTML=PILLARS.map((p,i)=>`
+    <div class="card pillar"><div class="n">${String(i+1).padStart(2,"0")}</div><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p></div>`).join("");
+}
+
+const planItems=[
+["w1a","Semana 1 · Observar","No aumentar publicaciones. Capturar mejor: un clip, una foto y una nota después de cada actividad musical."],
+["w1b","Semana 1 · Huellas","Probar las cuatro huellas: evidencia, aprendizaje, historia y puente."],
+["w2a","Semana 2 · Seleccionar","Elegir 6–8 materiales con mayor identidad y probar distintos pilares."],
+["w2b","Semana 2 · Ordenar","Nombrar archivos por fecha, tipo, canción/evento y persona."],
+["w3a","Semana 3 · Programar","Publicar 2–3 piezas y reactivar una canción vieja desde un ángulo nuevo."],
+["w3b","Semana 3 · Dejar aire","Mantener espacio para actualidad y espontaneidad."],
+["w4a","Semana 4 · Aprender","Revisar qué generó conversación, qué llevó a escuchar música y qué fue pesado de producir."],
+["w4b","Semana 4 · Decidir","Conservar lo sostenible y eliminar lo que le roba energía a la música."]
+];
+function renderPlan(){
+  const box=document.getElementById("planChecklist");
+  box.innerHTML=planItems.map(([id,t,d])=>`
+    <label class="check"><input type="checkbox" data-check="${id}" ${state.checks[id]?"checked":""}><span><b>${esc(t)}</b><br><span class="small">${esc(d)}</span></span></label>`).join("");
+  box.querySelectorAll("[data-check]").forEach(c=>c.addEventListener("change",()=>{state.checks[c.dataset.check]=c.checked;saveState();updatePlan();}));
+  updatePlan();
+}
+function updatePlan(){
+  const done=planItems.filter(([id])=>state.checks[id]).length;
+  const pct=Math.round(done/planItems.length*100);
+  document.getElementById("planPct").textContent=pct+"%";
+  document.getElementById("planBar").style.width=pct+"%";
+  document.getElementById("kpiPlan").textContent=pct+"%";
+}
+function updateKPIs(){
+  document.getElementById("kpiTotal").textContent=state.captures.length;
+  document.getElementById("kpiSelected").textContent=state.captures.filter(x=>x.status==="Seleccionado").length;
+  document.getElementById("kpiScheduled").textContent=state.captures.filter(x=>x.status==="Programado").length;
+  updatePlan();
+}
+
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const payload={app:"Auxiliadores OS",version:"0.1",exportedAt:new Date().toISOString(),state};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`Auxiliadores_OS_respaldo_${todayISO()}.json`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),500); toast("Respaldo exportado");
+});
+document.getElementById("importBtn").addEventListener("click",()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change",async e=>{
+  const file=e.target.files[0]; if(!file)return;
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data.state||!Array.isArray(data.state.captures)) throw new Error("Formato inválido");
+    state={...defaultState,...data.state}; saveState(); renderInbox(); renderPlan(); toast("Respaldo importado");
+  }catch(err){alert("No se pudo importar ese archivo.");}
+  e.target.value="";
+});
+
+document.getElementById("globalSearch").addEventListener("input",e=>{
+  const q=e.target.value.toLowerCase().trim(), box=document.getElementById("searchResults");
+  if(q.length<2){box.classList.remove("show");box.innerHTML="";return;}
+  const cap=state.captures.filter(x=>[x.title,x.notes,x.person,x.pillar].join(" ").toLowerCase().includes(q)).slice(0,5);
+  const ide=IDEAS.filter(x=>[x.pillar,x.text].join(" ").toLowerCase().includes(q)).slice(0,7);
+  const hits=[
+    ...cap.map(x=>({kind:"Captura",label:x.title,go:"capture"})),
+    ...ide.map(x=>({kind:x.pillar,label:x.text,go:"ideas"}))
+  ];
+  box.innerHTML=hits.length?hits.map(h=>`<div class="search-hit" data-hit="${h.go}"><b>${esc(h.kind)}</b>${esc(h.label)}</div>`).join(""):'<div class="small">Sin resultados.</div>';
+  box.classList.add("show");
+  box.querySelectorAll("[data-hit]").forEach(h=>h.addEventListener("click",()=>{goTo(h.dataset.hit);box.classList.remove("show");}));
+});
+
+renderInbox(); renderIdeas(); renderManual(); renderPlan(); randomIdea(); updateKPIs();
+</script>
+</body>
+</html>
